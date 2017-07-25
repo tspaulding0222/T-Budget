@@ -11,18 +11,51 @@ class ViewController: UIViewController, GIDSignInDelegate, GIDSignInUIDelegate {
     
     private let service = GTLRSheetsService()
     let signInButton = GIDSignInButton()
+    
+    private let leftBarWidth = 139;
+    private let leftBarOpen = false;
    
     @IBOutlet var sa_output: UILabel!
     @IBOutlet var output: UITextView!
     @IBOutlet var loader: UIActivityIndicatorView!
     @IBOutlet var HeaderBg: UIView!
+    @IBOutlet var LeftBar: UIView!
+    
+    @IBAction func refreshButtonTap(_ sender: Any) {
+        print("Refresh Tapped");
+        
+        output.text = "";
+        sa_output.text = "";
+        
+        loader.isHidden = false
+        loader.startAnimating();
+        
+        listSpendingAllowance();
+        listBudgets();
+    }
+    
+    @IBAction func MenuTap(_ sender: Any) {
+        animateMenu();
+    }
+    
+    @IBAction func AddExpenseTap(_ sender: Any) {
+        animateMenu();
+    }
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         output.textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0);
         
+        // Make the navigation bar translucent
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        self.navigationController?.navigationBar.shadowImage = UIImage()
+        self.navigationController?.navigationBar.isTranslucent = true
+        self.navigationController?.view.backgroundColor = .clear
+        
         HeaderBg.setGradientBackground(colorOne: Colors.darkOrange, colorTwo: Colors.lightOragne);
+        LeftBar.setGradientBackground(colorOne: Colors.darkOrange, colorTwo: Colors.middleOrange);
         loader.startAnimating();
         
         // Configure Google Sign-in.
@@ -39,17 +72,17 @@ class ViewController: UIViewController, GIDSignInDelegate, GIDSignInUIDelegate {
         }
     }
     
-    @IBAction func refreshButtonTapped(_ sender: UIButton) {
-        print("Refresh Tapped");
-        
-        output.text = "";
-        sa_output.text = "";
-        
-        loader.isHidden = false;
-        loader.startAnimating();
-        
-        listSpendingAllowance();
-        listBudgets();
+    func animateMenu() {
+        if(self.LeftBar.frame.origin.x.isEqual(to: 0)){
+            UIView.animate(withDuration: 0.2, delay:0, options: .curveEaseInOut, animations: {
+                self.LeftBar.frame.origin.x -= CGFloat(self.leftBarWidth);
+            });
+        }
+        else {
+            UIView.animate(withDuration: 0.2, delay:0, options: .curveEaseInOut, animations: {
+                self.LeftBar.frame.origin.x += CGFloat(self.leftBarWidth);
+            });
+        }
     }
     
     func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!,
