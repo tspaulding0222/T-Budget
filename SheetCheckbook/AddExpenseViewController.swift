@@ -21,7 +21,7 @@ class AddExpenseViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet var SubmitButton: UIButton!
     @IBOutlet var AccountToggle: UISegmentedControl!
     @IBOutlet var Loader: UIActivityIndicatorView!
-    @IBOutlet var SuccessNotification: UILabel!
+    @IBOutlet var SuccessNotification: UIView!
     
     @IBAction func SubmitTap(_ sender: Any) {
         let locationString = LocationTextField.text;
@@ -44,6 +44,7 @@ class AddExpenseViewController: UIViewController, UITextFieldDelegate {
         super.viewDidLoad()
 
         HeaderBg.setGradientBackground(colorOne: Colors.darkOrange, colorTwo: Colors.lightOragne);
+        SuccessNotification.setGradientBackground(colorOne: Colors.darkOrange, colorTwo: Colors.lightOragne);
         
         SubmitButton.layer.cornerRadius = 5;
         SubmitButton.layer.borderWidth = 1;
@@ -51,7 +52,18 @@ class AddExpenseViewController: UIViewController, UITextFieldDelegate {
         
         Loader.isHidden = true;
         
+        LocationTextField.delegate = self;
+        
         AmountTextField.delegate = self;
+        AmountTextField.keyboardType = UIKeyboardType.decimalPad;
+        
+        //Looks for single or multiple taps.
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        
+        //Uncomment the line below if you want the tap not not interfere and cancel other interactions.
+        tap.cancelsTouchesInView = false
+        
+        view.addGestureRecognizer(tap)
     }
 
     override func didReceiveMemoryWarning() {
@@ -60,8 +72,8 @@ class AddExpenseViewController: UIViewController, UITextFieldDelegate {
     }
     
     func addCreditExpense() {
-        //TODO: Start the loader
-        
+        dismissKeyboard();
+        showLoader();
         let spreadsheetId = "1fqEk4yeKqjJR6zQPGlu8ZYrOPx_Y7T8vp17hin3HaFY"
         let range = "Checking!F4:F21"
         let query = GTLRSheetsQuery_SpreadsheetsValuesGet.query(withSpreadsheetId: spreadsheetId, range:range)
@@ -96,7 +108,8 @@ class AddExpenseViewController: UIViewController, UITextFieldDelegate {
     }
     
     func addCheckingExpense() {
-        //TODO: Start the loader
+        dismissKeyboard();
+        showLoader();
         let spreadsheetId = "1fqEk4yeKqjJR6zQPGlu8ZYrOPx_Y7T8vp17hin3HaFY"
         let range = "Checking!C4:C21"
         let query = GTLRSheetsQuery_SpreadsheetsValuesGet.query(withSpreadsheetId: spreadsheetId, range:range)
@@ -137,6 +150,7 @@ class AddExpenseViewController: UIViewController, UITextFieldDelegate {
             showAlert(title: "Error", message: error.localizedDescription)
             return
         }
+        clearFields();
         endLoader();
         showSuccessNotif();
     }
@@ -168,12 +182,20 @@ class AddExpenseViewController: UIViewController, UITextFieldDelegate {
     }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        let aSet = NSCharacterSet(charactersIn:"0123456789.").inverted
-        let compSepByCharInSet = string.components(separatedBy: aSet)
-        let numberFiltered = compSepByCharInSet.joined(separator: "")
-        return string == numberFiltered
+        if(textField.tag == 1) {
+            let aSet = NSCharacterSet(charactersIn:"0123456789.").inverted
+            let compSepByCharInSet = string.components(separatedBy: aSet)
+            let numberFiltered = compSepByCharInSet.joined(separator: "")
+            return string == numberFiltered
+        } else {
+            return true;
+        }
     }
     
+    func textFieldShouldReturn(_ scoreText: UITextField) -> Bool {
+        self.view.endEditing(true)
+        return false
+    }
 
     // Helper for showing an alert
     func showAlert(title : String, message: String) {
@@ -189,5 +211,14 @@ class AddExpenseViewController: UIViewController, UITextFieldDelegate {
         )
         alert.addAction(ok)
         present(alert, animated: true, completion: nil)
+    }
+    
+    func dismissKeyboard() {
+        view.endEditing(true)
+    }
+    
+    func clearFields() {
+        AmountTextField.text = "";
+        LocationTextField.text = "";
     }
 }
