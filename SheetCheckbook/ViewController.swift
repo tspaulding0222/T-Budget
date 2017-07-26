@@ -7,7 +7,9 @@ class ViewController: UIViewController, GIDSignInDelegate, GIDSignInUIDelegate {
     
     // If modifying these scopes, delete your previously saved credentials by
     // resetting the iOS simulator or uninstall the app.
-    private let scopes = [kGTLRAuthScopeSheetsSpreadsheetsReadonly]
+    private let scopes = [kGTLRAuthScopeSheetsSpreadsheets]
+    
+    var _firstLoad = true;
     
     private let service = GTLRSheetsService()
     let signInButton = GIDSignInButton()
@@ -22,13 +24,10 @@ class ViewController: UIViewController, GIDSignInDelegate, GIDSignInUIDelegate {
     @IBOutlet var LeftBar: UIView!
     
     @IBAction func refreshButtonTap(_ sender: Any) {
-        print("Refresh Tapped");
-        
         output.text = "";
         sa_output.text = "";
         
-        loader.isHidden = false
-        loader.startAnimating();
+        endLoader();
         
         listSpendingAllowance();
         listBudgets();
@@ -56,7 +55,7 @@ class ViewController: UIViewController, GIDSignInDelegate, GIDSignInUIDelegate {
         
         HeaderBg.setGradientBackground(colorOne: Colors.darkOrange, colorTwo: Colors.lightOragne);
         LeftBar.setGradientBackground(colorOne: Colors.darkOrange, colorTwo: Colors.middleOrange);
-        loader.startAnimating();
+        showLoader();
         
         // Configure Google Sign-in.
         GIDSignIn.sharedInstance().delegate = self
@@ -70,6 +69,28 @@ class ViewController: UIViewController, GIDSignInDelegate, GIDSignInUIDelegate {
         if (GIDSignIn.sharedInstance().hasAuthInKeychain()) {
             self.signInButton.isHidden = true;
         }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated);
+        
+        if (!_firstLoad) {
+            listSpendingAllowance();
+            listBudgets();
+        }
+        
+        _firstLoad = false;
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated);
+    }
+    
+    // Override the add expense segue to pass in the google service object for rest calls
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let newVC: AddExpenseViewController = segue.destination as! AddExpenseViewController
+        let passedService = self.service;
+        newVC.receivedService = passedService;
     }
     
     func animateMenu() {
@@ -100,7 +121,7 @@ class ViewController: UIViewController, GIDSignInDelegate, GIDSignInUIDelegate {
     
     func listSpendingAllowance() {
         let spreadsheetId = "1fqEk4yeKqjJR6zQPGlu8ZYrOPx_Y7T8vp17hin3HaFY"
-        let range = "Checking!J14"
+        let range = "Checking!A18"
         let query = GTLRSheetsQuery_SpreadsheetsValuesGet
             .query(withSpreadsheetId: spreadsheetId, range:range)
         service.executeQuery(query,
@@ -114,8 +135,7 @@ class ViewController: UIViewController, GIDSignInDelegate, GIDSignInUIDelegate {
                                         finishedWithObject result : GTLRSheets_ValueRange,
                                         error : NSError?) {
         
-        loader.stopAnimating();
-        loader.isHidden = true;
+        endLoader();
         
         if let error = error {
             showAlert(title: "Error", message: error.localizedDescription)
@@ -150,7 +170,7 @@ class ViewController: UIViewController, GIDSignInDelegate, GIDSignInUIDelegate {
     // https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
     func listBudgets() {
         let spreadsheetId = "1fqEk4yeKqjJR6zQPGlu8ZYrOPx_Y7T8vp17hin3HaFY"
-        let range = "Checking!I4:J13"
+        let range = "Checking!I4:J14"
         let query = GTLRSheetsQuery_SpreadsheetsValuesGet
             .query(withSpreadsheetId: spreadsheetId, range:range)
         service.executeQuery(query,
@@ -164,8 +184,7 @@ class ViewController: UIViewController, GIDSignInDelegate, GIDSignInUIDelegate {
                                  finishedWithObject result : GTLRSheets_ValueRange,
                                  error : NSError?) {
         
-        loader.stopAnimating();
-        loader.isHidden = true;
+        endLoader();
         
         if let error = error {
             showAlert(title: "Error", message: error.localizedDescription)
@@ -205,5 +224,15 @@ class ViewController: UIViewController, GIDSignInDelegate, GIDSignInUIDelegate {
         )
         alert.addAction(ok)
         present(alert, animated: true, completion: nil)
+    }
+    
+    func showLoader() {
+        loader.startAnimating();
+        loader.isHidden = false;
+    }
+    
+    func endLoader() {
+        loader.isHidden = true;
+        loader.stopAnimating();
     }
 }

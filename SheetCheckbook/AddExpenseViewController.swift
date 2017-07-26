@@ -5,15 +5,23 @@
 //  Created by Tom Spaulding on 7/25/17.
 //  Copyright © 2017 Tom Spaulding. All rights reserved.
 //
-
+import GoogleAPIClientForREST
+import GoogleSignIn
 import UIKit
 
 class AddExpenseViewController: UIViewController, UITextFieldDelegate {
+    
+    var receivedService = GTLRSheetsService()
+    
+    private let startingRowIndex = 4;
     
     @IBOutlet var HeaderBg: UIView!
     @IBOutlet var LocationTextField: UITextField!
     @IBOutlet var AmountTextField: UITextField!
     @IBOutlet var SubmitButton: UIButton!
+    @IBOutlet var AccountToggle: UISegmentedControl!
+    @IBOutlet var Loader: UIActivityIndicatorView!
+    @IBOutlet var SuccessNotification: UILabel!
     
     @IBAction func SubmitTap(_ sender: Any) {
         let locationString = LocationTextField.text;
@@ -23,10 +31,12 @@ class AddExpenseViewController: UIViewController, UITextFieldDelegate {
             showAlert(title: "Missing Date", message: "Please provide location and amount")
         }
         else {
-            let amountDouble = Double(amountString!);
-            let amountRounded = String(format: "%.2f", amountDouble!);
-            
-            
+            if(AccountToggle.selectedSegmentIndex == 0){
+                addCreditExpense();
+            }
+            else {
+                addCheckingExpense();
+            }
         }
     }
     
@@ -39,12 +49,122 @@ class AddExpenseViewController: UIViewController, UITextFieldDelegate {
         SubmitButton.layer.borderWidth = 1;
         SubmitButton.layer.borderColor = UIColor.black.cgColor;
         
+        Loader.isHidden = true;
+        
         AmountTextField.delegate = self;
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    func addCreditExpense() {
+        //TODO: Start the loader
+        
+        let spreadsheetId = "1fqEk4yeKqjJR6zQPGlu8ZYrOPx_Y7T8vp17hin3HaFY"
+        let range = "Checking!F4:F21"
+        let query = GTLRSheetsQuery_SpreadsheetsValuesGet.query(withSpreadsheetId: spreadsheetId, range:range)
+        receivedService.executeQuery(query, delegate: self, didFinish: #selector(sendCreditExpenseToGoogleSheet(ticket:finishedWithObject:error:)))
+    }
+    
+    func sendCreditExpenseToGoogleSheet(ticket: GTLRServiceTicket, finishedWithObject result : GTLRSheets_ValueRange, error : NSError?) {
+        if let error = error {
+            showAlert(title: "Error", message: error.localizedDescription)
+            return
+        }
+        
+        var nextEmptyRowIndex = startingRowIndex;
+        if(result.values != nil){
+            let rows = result.values!
+            nextEmptyRowIndex = rows.count + self.startingRowIndex;
+        }
+        let nextEmptyRowIndexString = String(nextEmptyRowIndex);
+        
+        let spreadsheetId = "1fqEk4yeKqjJR6zQPGlu8ZYrOPx_Y7T8vp17hin3HaFY"
+        let range = "Checking!F"+nextEmptyRowIndexString+":G"+nextEmptyRowIndexString;
+        
+        let locationValue = LocationTextField.text;
+        let amountValue = AmountTextField.text;
+        
+        let valueRange = GTLRSheets_ValueRange.init();
+        valueRange.values = [[locationValue!, amountValue!]];
+        
+        let query = GTLRSheetsQuery_SpreadsheetsValuesAppend.query(withObject: valueRange, spreadsheetId: spreadsheetId, range: range)
+        query.valueInputOption = "USER_ENTERED";
+        receivedService.executeQuery(query, delegate: self, didFinish: #selector(addExpenseCompletion(ticket:finishedWithObject:error:)));
+    }
+    
+    func addCheckingExpense() {
+        //TODO: Start the loader
+        let spreadsheetId = "1fqEk4yeKqjJR6zQPGlu8ZYrOPx_Y7T8vp17hin3HaFY"
+        let range = "Checking!C4:C21"
+        let query = GTLRSheetsQuery_SpreadsheetsValuesGet.query(withSpreadsheetId: spreadsheetId, range:range)
+        receivedService.executeQuery(query, delegate: self, didFinish: #selector(sendCheckingExpenseToGoogleSheet(ticket:finishedWithObject:error:)))
+    }
+    
+    func sendCheckingExpenseToGoogleSheet(ticket: GTLRServiceTicket, finishedWithObject result : GTLRSheets_ValueRange, error : NSError?) {
+        if let error = error {
+            showAlert(title: "Error", message: error.localizedDescription)
+            return
+        }
+        
+        var nextEmptyRowIndex = startingRowIndex;
+        if(result.values != nil){
+            let rows = result.values!
+            nextEmptyRowIndex = rows.count + self.startingRowIndex;
+        }
+        let nextEmptyRowIndexString = String(nextEmptyRowIndex);
+        
+        let spreadsheetId = "1fqEk4yeKqjJR6zQPGlu8ZYrOPx_Y7T8vp17hin3HaFY"
+        let range = "Checking!C"+nextEmptyRowIndexString+":D"+nextEmptyRowIndexString;
+        
+        let locationValue = LocationTextField.text;
+        let amountValue = AmountTextField.text;
+        
+        let valueRange = GTLRSheets_ValueRange.init();
+        valueRange.values = [[locationValue!, amountValue!]];
+        
+        let query = GTLRSheetsQuery_SpreadsheetsValuesAppend.query(withObject: valueRange, spreadsheetId: spreadsheetId, range: range)
+        query.valueInputOption = "USER_ENTERED";
+        receivedService.executeQuery(query, delegate: self, didFinish: #selector(addExpenseCompletion(ticket:finishedWithObject:error:)));
+    }
+    
+    func addExpenseCompletion(ticket: GTLRServiceTicket,
+                                        finishedWithObject result : GTLRSheets_ValueRange,
+                                        error : NSError?) {
+        if let error = error {
+            showAlert(title: "Error", message: error.localizedDescription)
+            return
+        }
+        endLoader();
+        showSuccessNotif();
+    }
+    
+    func showLoader(){
+        Loader.startAnimating();
+        Loader.isHidden = false;
+    }
+    
+    func endLoader() {
+        Loader.isHidden = true;
+        Loader.stopAnimating();
+    }
+    
+    func showSuccessNotif() {
+        UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut, animations: {
+            self.SuccessNotification.alpha = 1;
+            self.SuccessNotification.frame.origin.y -= self.SuccessNotification.frame.height;
+        });
+        
+        //Auto hide the success notification
+        let when = DispatchTime.now() + 2 // Wait 1 second
+        DispatchQueue.main.asyncAfter(deadline: when) {
+            UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut, animations: {
+                self.SuccessNotification.alpha = 0;
+                self.SuccessNotification.frame.origin.y += self.SuccessNotification.frame.height;
+            });
+        }
     }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
