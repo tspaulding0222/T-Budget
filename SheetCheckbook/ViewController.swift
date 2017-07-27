@@ -44,6 +44,22 @@ class ViewController: UIViewController, GIDSignInDelegate, GIDSignInUIDelegate {
     @IBAction func NotesTap(_ sender: Any) {
         animateMenu();
     }
+    
+    @IBAction func TransactionTap(_ sender: Any) {
+        animateMenu();
+    }
+    
+    @IBAction func BillsTap(_ sender: Any) {
+        animateMenu();
+    }
+    
+    @IBAction func BalancesTap(_ sender: Any) {
+        animateMenu();
+    }
+    
+    @IBAction func AttributionsTap(_ sender: Any) {
+        animateMenu();
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()

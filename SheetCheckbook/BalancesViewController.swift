@@ -10,8 +10,12 @@ import UIKit
 
 class BalancesViewController: UIViewController {
 
+    @IBOutlet var HeaderBf: UIView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        HeaderBf.setGradientBackground(colorOne: Colors.darkOrange, colorTwo: Colors.lightOragne);
 
     }
 

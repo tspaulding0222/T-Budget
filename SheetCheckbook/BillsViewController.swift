@@ -9,9 +9,13 @@
 import UIKit
 
 class BillsViewController: UIViewController {
+    
+    @IBOutlet var HeaderBg: UIView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        HeaderBg.setGradientBackground(colorOne: Colors.darkOrange, colorTwo: Colors.lightOragne);
     }
 
     override func didReceiveMemoryWarning() {
