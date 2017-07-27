@@ -64,6 +64,10 @@ class AddExpenseViewController: UIViewController, UITextFieldDelegate {
         tap.cancelsTouchesInView = false
         
         view.addGestureRecognizer(tap)
+        
+        let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        swipeDown.direction = .down
+        self.view.addGestureRecognizer(swipeDown)
     }
 
     override func didReceiveMemoryWarning() {

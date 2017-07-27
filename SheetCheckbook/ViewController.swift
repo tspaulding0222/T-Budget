@@ -41,7 +41,10 @@ class ViewController: UIViewController, GIDSignInDelegate, GIDSignInUIDelegate {
         animateMenu();
     }
     
-    
+    @IBAction func NotesTap(_ sender: Any) {
+        animateMenu();
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -88,9 +91,17 @@ class ViewController: UIViewController, GIDSignInDelegate, GIDSignInUIDelegate {
     
     // Override the add expense segue to pass in the google service object for rest calls
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        let newVC: AddExpenseViewController = segue.destination as! AddExpenseViewController
-        let passedService = self.service;
-        newVC.receivedService = passedService;
+        
+        if(segue.identifier == "NotesSegue") {
+            let newVC: NotesViewController = segue.destination as! NotesViewController
+            let passedService = self.service;
+            newVC.receivedService = passedService;
+        }
+        else if(segue.identifier == "AddExpenseSegue") {
+            let newVC: AddExpenseViewController = segue.destination as! AddExpenseViewController
+            let passedService = self.service;
+            newVC.receivedService = passedService;
+        }
     }
     
     func animateMenu() {
