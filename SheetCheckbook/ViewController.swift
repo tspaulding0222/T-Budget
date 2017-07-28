@@ -27,7 +27,7 @@ class ViewController: UIViewController, GIDSignInDelegate, GIDSignInUIDelegate {
         output.text = "";
         sa_output.text = "";
         
-        endLoader();
+        showLoader();
         
         listSpendingAllowance();
         listBudgets();
@@ -115,6 +115,11 @@ class ViewController: UIViewController, GIDSignInDelegate, GIDSignInUIDelegate {
         }
         else if(segue.identifier == "AddExpenseSegue") {
             let newVC: AddExpenseViewController = segue.destination as! AddExpenseViewController
+            let passedService = self.service;
+            newVC.receivedService = passedService;
+        }
+        else if (segue.identifier == "TransactionsSegue") {
+            let newVC: TransactionsViewController = segue.destination as! TransactionsViewController
             let passedService = self.service;
             newVC.receivedService = passedService;
         }
