@@ -123,6 +123,16 @@ class ViewController: UIViewController, GIDSignInDelegate, GIDSignInUIDelegate {
             let passedService = self.service;
             newVC.receivedService = passedService;
         }
+        else if(segue.identifier == "BillsSegue") {
+            let newVC: BillsViewController = segue.destination as! BillsViewController
+            let passedService = self.service
+            newVC.receivedService = passedService
+        }
+        else if(segue.identifier == "BalancesSegue") {
+            let newVC: BalancesViewController = segue.destination as! BalancesViewController
+            let passedService = self.service
+            newVC.receivedService = passedService
+        }
     }
     
     func animateMenu() {

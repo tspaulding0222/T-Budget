@@ -124,7 +124,7 @@ class TransactionsViewController: UIViewController {
         let labelView = UILabel(frame: CGRect(x: 0, y: currentYInScrollView, width: Int(self.ScrollView.frame.width), height: 20));
         labelView.textColor = UIColor.white;
         labelView.text = headerText;
-        labelView.font = labelView.font.withSize(20);
+        labelView.font = UIFont.boldSystemFont(ofSize: 17);
         
         currentYInScrollView = currentYInScrollView + Int(labelView.frame.height) + tomPadding;
         ScrollView.contentSize = CGSize(width: ScrollView.frame.width, height: CGFloat(currentYInScrollView));

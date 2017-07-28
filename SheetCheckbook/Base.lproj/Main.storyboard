@@ -108,7 +108,7 @@
                                         </state>
                                         <connections>
                                             <action selector="BillsTap:" destination="BYZ-38-t0r" eventType="touchUpInside" id="DpD-Bk-w6S"/>
-                                            <segue destination="UfZ-PF-CbE" kind="show" id="3yO-LD-hHV"/>
+                                            <segue destination="UfZ-PF-CbE" kind="show" identifier="BillsSegue" id="3yO-LD-hHV"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xXx-RX-mQr">
@@ -120,7 +120,7 @@
                                         </state>
                                         <connections>
                                             <action selector="BalancesTap:" destination="BYZ-38-t0r" eventType="touchUpInside" id="mWq-Iw-C3J"/>
-                                            <segue destination="9XZ-xS-fE5" kind="show" id="1SE-R6-WxS"/>
+                                            <segue destination="9XZ-xS-fE5" kind="show" identifier="BalancesSegue" id="1SE-R6-WxS"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bSR-5H-YBk">
@@ -554,11 +554,26 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pq6-rP-I4q" userLabel="Container">
+                                <rect key="frame" x="16" y="102" width="113" height="458"/>
+                                <autoresizingMask key="autoresizingMask" heightSizable="YES"/>
+                            </view>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Wzi-zf-a6H">
+                                <rect key="frame" x="191" y="102" width="113" height="458"/>
+                                <autoresizingMask key="autoresizingMask" heightSizable="YES"/>
+                            </view>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fmv-QA-RJR">
+                                <rect key="frame" x="129" y="102" width="63" height="458"/>
+                                <autoresizingMask key="autoresizingMask" heightSizable="YES"/>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <connections>
+                        <outlet property="Container" destination="pq6-rP-I4q" id="c2g-Pt-bFo"/>
+                        <outlet property="EndContainer" destination="Wzi-zf-a6H" id="3ao-Ol-Oos"/>
                         <outlet property="HeaderBg" destination="Qxy-qu-htd" id="spw-LP-GkB"/>
+                        <outlet property="MiddleContainer" destination="fmv-QA-RJR" id="ptS-lx-MbM"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="pYC-U3-0MD" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -593,10 +608,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Kje-94-02H">
+                                <rect key="frame" x="16" y="102" width="288" height="458"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <connections>
+                        <outlet property="Container" destination="Kje-94-02H" id="sxr-bM-Elg"/>
                         <outlet property="HeaderBf" destination="yjF-xD-mtu" id="ZBE-xC-fom"/>
                     </connections>
                 </viewController>
