@@ -5,6 +5,7 @@
 //  Created by Tom Spaulding on 7/25/17.
 //  Copyright © 2017 Tom Spaulding. All rights reserved.
 //
+import SwiftyPickerPopover
 import GoogleAPIClientForREST
 import GoogleSignIn
 import UIKit
@@ -22,6 +23,7 @@ class AddExpenseViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet var AccountToggle: UISegmentedControl!
     @IBOutlet var Loader: UIActivityIndicatorView!
     @IBOutlet var SuccessNotification: UIView!
+    @IBOutlet var BudgetField: UILabel!
     
     @IBAction func SubmitTap(_ sender: Any) {
         let locationString = LocationTextField.text;
@@ -40,9 +42,20 @@ class AddExpenseViewController: UIViewController, UITextFieldDelegate {
         }
     }
     
+    @IBAction func BudgetFieldTap(_ sender: Any) {
+        StringPickerPopover(title: "StringPicker", choices: ["None","Gas","Groceries","Auto Maintenance","Travel","Pet","House","Misc"])
+            .setSelectedRow(0)
+            .setDoneButton(action: { (popover, selectedRow, selectedString) in
+                self.BudgetField.text = selectedString;
+            })
+            .setCancelButton(action: { v in self.BudgetField.text = "None" }
+            )
+            .appear(originView: BudgetField, baseViewController: self)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         HeaderBg.setGradientBackground(colorOne: Colors.darkOrange, colorTwo: Colors.lightOragne);
         SuccessNotification.setGradientBackground(colorOne: Colors.darkOrange, colorTwo: Colors.lightOragne);
         
@@ -69,7 +82,7 @@ class AddExpenseViewController: UIViewController, UITextFieldDelegate {
         swipeDown.direction = .down
         self.view.addGestureRecognizer(swipeDown)
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -148,15 +161,94 @@ class AddExpenseViewController: UIViewController, UITextFieldDelegate {
     }
     
     func addExpenseCompletion(ticket: GTLRServiceTicket,
-                                        finishedWithObject result : GTLRSheets_ValueRange,
-                                        error : NSError?) {
+                              finishedWithObject result : GTLRSheets_ValueRange,
+                              error : NSError?) {
         if let error = error {
             showAlert(title: "Error", message: error.localizedDescription)
             return
         }
+        
+        if(BudgetField.text != "None"){
+            updateBudgetValues();
+        } else {
+            clearFields();
+            endLoader();
+            showSuccessNotif();
+        }
+    }
+    
+    func updateBudgetValues() {
+        let range = getRangeDependingOnBudgetString();
+        
+        let spreadsheetId = "1fqEk4yeKqjJR6zQPGlu8ZYrOPx_Y7T8vp17hin3HaFY"
+        let query = GTLRSheetsQuery_SpreadsheetsValuesGet.query(withSpreadsheetId: spreadsheetId, range:String(describing: range))
+        receivedService.executeQuery(query, delegate: self, didFinish: #selector(sendUpdatedBudgetToGoogleSheet(ticket:finishedWithObject:error:)))
+    }
+    
+    func sendUpdatedBudgetToGoogleSheet(ticket: GTLRServiceTicket, finishedWithObject result : GTLRSheets_ValueRange, error : NSError?) {
+        if let error = error {
+            showAlert(title: "Error", message: error.localizedDescription)
+            return
+        }
+        
+        if(result.values != nil) {
+            let rows = result.values!
+            
+            if(rows.isEmpty) {
+                return
+            }
+            
+            for row in rows {
+                let currentBudgetValue = row[0];
+                let currentBudgetValueString = String(describing: currentBudgetValue);
+                let subractValue = AmountTextField.text!;
+                
+                let newValue = Float(currentBudgetValueString)! - Float(subractValue)!;
+                let valueRange = GTLRSheets_ValueRange.init();
+                valueRange.values = [[newValue]];
+                
+                let spreadsheetId = "1fqEk4yeKqjJR6zQPGlu8ZYrOPx_Y7T8vp17hin3HaFY"
+                let range = getRangeDependingOnBudgetString();
+                let query = GTLRSheetsQuery_SpreadsheetsValuesUpdate.query(withObject: valueRange, spreadsheetId: spreadsheetId, range: range)
+                query.valueInputOption = "USER_ENTERED";
+                receivedService.executeQuery(query, delegate: self, didFinish: #selector(updateedBudgetComplete(ticket:finishedWithObject:error:)));
+            }
+        }
+    }
+    
+    func updateedBudgetComplete(ticket: GTLRServiceTicket,
+                                finishedWithObject result : GTLRSheets_ValueRange,
+                                error : NSError?) {
         clearFields();
         endLoader();
         showSuccessNotif();
+    }
+    
+    func getRangeDependingOnBudgetString() -> String {
+        var range = "";
+        if(BudgetField.text == "Gas") {
+            range = "Checking!J4"
+        }
+        if(BudgetField.text == "Groceries") {
+            range = "Checking!J5"
+        }
+        if(BudgetField.text == "Auto Maintenance") {
+            range = "Checking!J9"
+        }
+        if(BudgetField.text == "Pet") {
+            range = "Checking!J11"
+        }
+        if(BudgetField.text == "House") {
+            range = "Checking!J12"
+        }
+        if(BudgetField.text == "Misc") {
+            range = "Checking!J14"
+        }
+        if(BudgetField.text == "Travel") {
+            range = "Checking!J14"
+        }
+        
+        return range;
     }
     
     func showLoader(){
@@ -200,7 +292,7 @@ class AddExpenseViewController: UIViewController, UITextFieldDelegate {
         self.view.endEditing(true)
         return false
     }
-
+    
     // Helper for showing an alert
     func showAlert(title : String, message: String) {
         let alert = UIAlertController(
@@ -224,5 +316,6 @@ class AddExpenseViewController: UIViewController, UITextFieldDelegate {
     func clearFields() {
         AmountTextField.text = "";
         LocationTextField.text = "";
+        BudgetField.text = "";
     }
 }
