@@ -539,6 +539,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xo6-Wd-FV0">
                                 <rect key="frame" x="16" y="72" width="288" height="488"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <subviews>
+                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="W2O-bT-Ttx">
+                                        <rect key="frame" x="134" y="234" width="20" height="20"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                                        <color key="color" red="1" green="0.50196081400000003" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                    </activityIndicatorView>
+                                </subviews>
                             </scrollView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -548,6 +555,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
                     <size key="freeformSize" width="320" height="568"/>
                     <connections>
                         <outlet property="HeaderBg" destination="DPn-hu-Opn" id="mvq-97-WOf"/>
+                        <outlet property="Loader" destination="W2O-bT-Ttx" id="DWv-dV-3oZ"/>
                         <outlet property="ScrollView" destination="xo6-Wd-FV0" id="Ife-Ys-Uqa"/>
                     </connections>
                 </viewController>
@@ -594,6 +602,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fmv-QA-RJR">
                                 <rect key="frame" x="129" y="102" width="63" height="458"/>
                                 <autoresizingMask key="autoresizingMask" heightSizable="YES"/>
+                                <subviews>
+                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="pWV-ji-Kt7">
+                                        <rect key="frame" x="21" y="219" width="20" height="20"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                                        <color key="color" red="1" green="0.50196081400000003" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                    </activityIndicatorView>
+                                </subviews>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -602,6 +617,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
                         <outlet property="Container" destination="pq6-rP-I4q" id="c2g-Pt-bFo"/>
                         <outlet property="EndContainer" destination="Wzi-zf-a6H" id="3ao-Ol-Oos"/>
                         <outlet property="HeaderBg" destination="Qxy-qu-htd" id="spw-LP-GkB"/>
+                        <outlet property="Loader" destination="pWV-ji-Kt7" id="wyg-Gd-ZXg"/>
                         <outlet property="MiddleContainer" destination="fmv-QA-RJR" id="ptS-lx-MbM"/>
                     </connections>
                 </viewController>
@@ -640,6 +656,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Kje-94-02H">
                                 <rect key="frame" x="16" y="102" width="288" height="458"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <subviews>
+                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="Sh1-cG-MMk">
+                                        <rect key="frame" x="134" y="219" width="20" height="20"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                                        <color key="color" red="1" green="0.50196081400000003" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                    </activityIndicatorView>
+                                </subviews>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -647,6 +670,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
                     <connections>
                         <outlet property="Container" destination="Kje-94-02H" id="sxr-bM-Elg"/>
                         <outlet property="HeaderBf" destination="yjF-xD-mtu" id="ZBE-xC-fom"/>
+                        <outlet property="Loader" destination="Sh1-cG-MMk" id="bad-ng-284"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2ft-gp-h8L" userLabel="First Responder" sceneMemberID="firstResponder"/>

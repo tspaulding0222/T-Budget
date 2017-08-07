@@ -22,9 +22,12 @@ class TransactionsViewController: UIViewController {
     
     @IBOutlet var HeaderBg: UIView!
     @IBOutlet var ScrollView: UIScrollView!
+    @IBOutlet var Loader: UIActivityIndicatorView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        endLoader();
         
         HeaderBg.setGradientBackground(colorOne: Colors.darkOrange, colorTwo: Colors.lightOragne);
         
@@ -39,6 +42,8 @@ class TransactionsViewController: UIViewController {
     }
     
     func getCheckingTransactions() {
+        showLoader();
+        
         let spreadsheetId = "1fqEk4yeKqjJR6zQPGlu8ZYrOPx_Y7T8vp17hin3HaFY"
         let range = "Checking!C4:D21"
         let query = GTLRSheetsQuery_SpreadsheetsValuesGet
@@ -52,6 +57,7 @@ class TransactionsViewController: UIViewController {
                                  finishedWithObject result : GTLRSheets_ValueRange,
                                  error : NSError?){
         if let error = error {
+            endLoader();
             showAlert(title: "Error", message: error.localizedDescription)
             return
         }
@@ -77,7 +83,7 @@ class TransactionsViewController: UIViewController {
             createTransactionTextView(transText: "No Checking Transactions Found");
         }
         
-        
+        endLoader();
     }
     
     func getCreditTransactions() {
@@ -158,5 +164,15 @@ class TransactionsViewController: UIViewController {
         )
         alert.addAction(ok)
         present(alert, animated: true, completion: nil)
+    }
+    
+    func showLoader(){
+        Loader.startAnimating();
+        Loader.isHidden = false;
+    }
+    
+    func endLoader() {
+        Loader.isHidden = true;
+        Loader.stopAnimating();
     }
 }

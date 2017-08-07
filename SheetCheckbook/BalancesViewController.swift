@@ -18,9 +18,12 @@ class BalancesViewController: UIViewController {
 
     @IBOutlet var HeaderBf: UIView!
     @IBOutlet var Container: UIView!
+    @IBOutlet var Loader: UIActivityIndicatorView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        endLoader();
         
         HeaderBf.setGradientBackground(colorOne: Colors.darkOrange, colorTwo: Colors.lightOragne);
 
@@ -32,6 +35,8 @@ class BalancesViewController: UIViewController {
     }
     
     func getBalancesFromGoogleSheet() {
+        showLoader();
+        
         let spreadsheetId = "1fqEk4yeKqjJR6zQPGlu8ZYrOPx_Y7T8vp17hin3HaFY"
         let range = "Checking!A2:A18"
         let query = GTLRSheetsQuery_SpreadsheetsValuesGet
@@ -64,6 +69,8 @@ class BalancesViewController: UIViewController {
                 }
             }
         }
+        
+        endLoader();
     }
     
     func createBalanceView(displayText: String) {
@@ -91,5 +98,15 @@ class BalancesViewController: UIViewController {
         )
         alert.addAction(ok)
         present(alert, animated: true, completion: nil)
+    }
+    
+    func showLoader(){
+        Loader.startAnimating();
+        Loader.isHidden = false;
+    }
+    
+    func endLoader() {
+        Loader.isHidden = true;
+        Loader.stopAnimating();
     }
 }

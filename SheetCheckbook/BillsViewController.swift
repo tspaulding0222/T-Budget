@@ -19,9 +19,12 @@ class BillsViewController: UIViewController {
     @IBOutlet var Container: UIView!
     @IBOutlet var MiddleContainer: UIView!
     @IBOutlet var EndContainer: UIView!
+    @IBOutlet var Loader: UIActivityIndicatorView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        endLoader();
         
         HeaderBg.setGradientBackground(colorOne: Colors.darkOrange, colorTwo: Colors.lightOragne);
         
@@ -33,6 +36,8 @@ class BillsViewController: UIViewController {
     }
     
     func getMonthlyBillsFromGoogleSheet() {
+        showLoader();
+        
         let spreadsheetId = "1fqEk4yeKqjJR6zQPGlu8ZYrOPx_Y7T8vp17hin3HaFY"
         let range = "Checking!I18:K29"
         let query = GTLRSheetsQuery_SpreadsheetsValuesGet.query(withSpreadsheetId: spreadsheetId, range:range)
@@ -67,6 +72,7 @@ class BillsViewController: UIViewController {
             createMonthlyBillView(name: "", day: "", value: "");
         }
         
+        endLoader();
     }
     
     func createMonthlyBillView(name: String, day: String, value: String) {
@@ -74,7 +80,7 @@ class BillsViewController: UIViewController {
         createMonthlyBillViewMiddle(billText: day)
         createMonthlyBillViewEnd(billText: value)
         
-         currentYInScrollView = currentYInScrollView + labelViewHeight
+        currentYInScrollView = currentYInScrollView + labelViewHeight
     }
     
     func createMonthlyBillViewStart(billText: String) {
@@ -118,5 +124,15 @@ class BillsViewController: UIViewController {
         )
         alert.addAction(ok)
         present(alert, animated: true, completion: nil)
+    }
+    
+    func showLoader(){
+        Loader.startAnimating();
+        Loader.isHidden = false;
+    }
+    
+    func endLoader() {
+        Loader.isHidden = true;
+        Loader.stopAnimating();
     }
 }
