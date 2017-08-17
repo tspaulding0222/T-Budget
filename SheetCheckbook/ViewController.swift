@@ -213,7 +213,7 @@ class ViewController: UIViewController, GIDSignInDelegate, GIDSignInUIDelegate {
     // https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
     func listBudgets() {
         let spreadsheetId = "1fqEk4yeKqjJR6zQPGlu8ZYrOPx_Y7T8vp17hin3HaFY"
-        let range = "Checking!I4:J14"
+        let range = "Checking!I4:L29"
         let query = GTLRSheetsQuery_SpreadsheetsValuesGet
             .query(withSpreadsheetId: spreadsheetId, range:range)
         service.executeQuery(query,
@@ -244,7 +244,7 @@ class ViewController: UIViewController, GIDSignInDelegate, GIDSignInUIDelegate {
         
         for row in rows {
             let name = row[0];
-            let bugetValue = row[1];
+            let bugetValue = row[2];
             
             majorsString += "\(name) - \(bugetValue)\n\n"
         }

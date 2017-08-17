@@ -22,6 +22,11 @@ class AttributionsViewController: UIViewController {
         UIApplication.shared.open(googleUrl, options: [:], completionHandler: nil)
     }
 
+    @IBAction func stickypodPickerTap(_ sender: Any) {
+        let googleUrl = NSURL(string: "https://github.com/hsylife/SwiftyPickerPopover")! as URL
+        UIApplication.shared.open(googleUrl, options: [:], completionHandler: nil)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 

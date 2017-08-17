@@ -34,16 +34,16 @@ class AddExpenseViewController: UIViewController, UITextFieldDelegate {
         }
         else {
             if(AccountToggle.selectedSegmentIndex == 0){
-                addCreditExpense();
+                sendCreditExpenseToGoogleSheet();
             }
             else {
-                addCheckingExpense();
+                sendCheckingExpenseToGoogleSheet();
             }
         }
     }
     
     @IBAction func BudgetFieldTap(_ sender: Any) {
-        StringPickerPopover(title: "StringPicker", choices: ["None","Gas","Groceries","Auto Maintenance","Travel","Pet","House","Misc"])
+        StringPickerPopover(title: "StringPicker", choices: ["None", "Gas", "Groceries"])
             .setSelectedRow(0)
             .setDoneButton(action: { (popover, selectedRow, selectedString) in
                 self.BudgetField.text = selectedString;
@@ -88,30 +88,9 @@ class AddExpenseViewController: UIViewController, UITextFieldDelegate {
         // Dispose of any resources that can be recreated.
     }
     
-    func addCreditExpense() {
-        dismissKeyboard();
-        showLoader();
+    func sendCreditExpenseToGoogleSheet() {
         let spreadsheetId = "1fqEk4yeKqjJR6zQPGlu8ZYrOPx_Y7T8vp17hin3HaFY"
-        let range = "Checking!F4:F21"
-        let query = GTLRSheetsQuery_SpreadsheetsValuesGet.query(withSpreadsheetId: spreadsheetId, range:range)
-        receivedService.executeQuery(query, delegate: self, didFinish: #selector(sendCreditExpenseToGoogleSheet(ticket:finishedWithObject:error:)))
-    }
-    
-    func sendCreditExpenseToGoogleSheet(ticket: GTLRServiceTicket, finishedWithObject result : GTLRSheets_ValueRange, error : NSError?) {
-        if let error = error {
-            showAlert(title: "Error", message: error.localizedDescription)
-            return
-        }
-        
-        var nextEmptyRowIndex = startingRowIndex;
-        if(result.values != nil){
-            let rows = result.values!
-            nextEmptyRowIndex = rows.count + self.startingRowIndex;
-        }
-        let nextEmptyRowIndexString = String(nextEmptyRowIndex);
-        
-        let spreadsheetId = "1fqEk4yeKqjJR6zQPGlu8ZYrOPx_Y7T8vp17hin3HaFY"
-        let range = "Checking!F"+nextEmptyRowIndexString+":G"+nextEmptyRowIndexString;
+        let range = "Checking!F4:G4";
         
         let locationValue = LocationTextField.text;
         let amountValue = AmountTextField.text;
@@ -124,30 +103,9 @@ class AddExpenseViewController: UIViewController, UITextFieldDelegate {
         receivedService.executeQuery(query, delegate: self, didFinish: #selector(addExpenseCompletion(ticket:finishedWithObject:error:)));
     }
     
-    func addCheckingExpense() {
-        dismissKeyboard();
-        showLoader();
+    func sendCheckingExpenseToGoogleSheet() {
         let spreadsheetId = "1fqEk4yeKqjJR6zQPGlu8ZYrOPx_Y7T8vp17hin3HaFY"
-        let range = "Checking!C4:C21"
-        let query = GTLRSheetsQuery_SpreadsheetsValuesGet.query(withSpreadsheetId: spreadsheetId, range:range)
-        receivedService.executeQuery(query, delegate: self, didFinish: #selector(sendCheckingExpenseToGoogleSheet(ticket:finishedWithObject:error:)))
-    }
-    
-    func sendCheckingExpenseToGoogleSheet(ticket: GTLRServiceTicket, finishedWithObject result : GTLRSheets_ValueRange, error : NSError?) {
-        if let error = error {
-            showAlert(title: "Error", message: error.localizedDescription)
-            return
-        }
-        
-        var nextEmptyRowIndex = startingRowIndex;
-        if(result.values != nil){
-            let rows = result.values!
-            nextEmptyRowIndex = rows.count + self.startingRowIndex;
-        }
-        let nextEmptyRowIndexString = String(nextEmptyRowIndex);
-        
-        let spreadsheetId = "1fqEk4yeKqjJR6zQPGlu8ZYrOPx_Y7T8vp17hin3HaFY"
-        let range = "Checking!C"+nextEmptyRowIndexString+":D"+nextEmptyRowIndexString;
+        let range = "Checking!C4:D4";
         
         let locationValue = LocationTextField.text;
         let amountValue = AmountTextField.text;
@@ -227,25 +185,10 @@ class AddExpenseViewController: UIViewController, UITextFieldDelegate {
     func getRangeDependingOnBudgetString() -> String {
         var range = "";
         if(BudgetField.text == "Gas") {
-            range = "Checking!J4"
+            range = "Checking!K17"
         }
         if(BudgetField.text == "Groceries") {
-            range = "Checking!J5"
-        }
-        if(BudgetField.text == "Auto Maintenance") {
-            range = "Checking!J9"
-        }
-        if(BudgetField.text == "Pet") {
-            range = "Checking!J11"
-        }
-        if(BudgetField.text == "House") {
-            range = "Checking!J12"
-        }
-        if(BudgetField.text == "Misc") {
-            range = "Checking!J14"
-        }
-        if(BudgetField.text == "Travel") {
-            range = "Checking!J14"
+            range = "Checking!K18"
         }
         
         return range;

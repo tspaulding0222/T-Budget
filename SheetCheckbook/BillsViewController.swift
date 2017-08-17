@@ -20,6 +20,7 @@ class BillsViewController: UIViewController {
     @IBOutlet var MiddleContainer: UIView!
     @IBOutlet var EndContainer: UIView!
     @IBOutlet var Loader: UIActivityIndicatorView!
+    @IBOutlet var ScrollView: UIScrollView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,7 +40,7 @@ class BillsViewController: UIViewController {
         showLoader();
         
         let spreadsheetId = "1fqEk4yeKqjJR6zQPGlu8ZYrOPx_Y7T8vp17hin3HaFY"
-        let range = "Checking!I18:K29"
+        let range = "Checking!I4:L29"
         let query = GTLRSheetsQuery_SpreadsheetsValuesGet.query(withSpreadsheetId: spreadsheetId, range:range)
         receivedService.executeQuery(query,
                              delegate: self,
@@ -64,13 +65,16 @@ class BillsViewController: UIViewController {
             for row in rows {
                 let rowName = row[0]
                 let rowDay = row[1]
-                let rowValue = row[2]
+                let rowValue = row[3]
                 
                 createMonthlyBillView(name: String(describing: rowName), day: String(describing: rowDay), value: String(describing: rowValue));
             }
         } else {
             createMonthlyBillView(name: "", day: "", value: "");
         }
+        
+        // Set the height of the scroll view
+        ScrollView.contentSize = CGSize(width: ScrollView.frame.width, height: CGFloat(currentYInScrollView));
         
         endLoader();
     }
