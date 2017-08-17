@@ -100,6 +100,11 @@ class ViewController: UIViewController, GIDSignInDelegate, GIDSignInUIDelegate {
         let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(self.animateMenu));
         swipeLeft.direction = UISwipeGestureRecognizerDirection.left;
         self.view.addGestureRecognizer(swipeLeft);
+        
+        //swipe down
+        let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(self.refreshButtonTap(_:)));
+        swipeDown.direction = UISwipeGestureRecognizerDirection.down;
+        self.view.addGestureRecognizer(swipeDown);
     }
     
     override func viewWillAppear(_ animated: Bool) {
