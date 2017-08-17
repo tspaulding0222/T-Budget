@@ -28,7 +28,7 @@ class ViewController: UIViewController, GIDSignInDelegate, GIDSignInUIDelegate {
         output.text = "";
         sa_output.text = "";
         
-        showLoader();
+        Common.showLoader(Loader: loader);
         
         listSpendingAllowance();
         listBudgets();
@@ -61,7 +61,8 @@ class ViewController: UIViewController, GIDSignInDelegate, GIDSignInUIDelegate {
     @IBAction func AttributionsTap(_ sender: Any) {
         animateMenu();
     }
-
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -75,7 +76,7 @@ class ViewController: UIViewController, GIDSignInDelegate, GIDSignInUIDelegate {
         
         HeaderBg.setGradientBackground(colorOne: Colors.darkOrange, colorTwo: Colors.lightOragne);
         LeftBar.setGradientBackground(colorOne: Colors.darkOrange, colorTwo: Colors.middleOrange);
-        showLoader();
+        Common.showLoader(Loader: loader);
         
         // Configure Google Sign-in.
         GIDSignIn.sharedInstance().delegate = self
@@ -89,6 +90,16 @@ class ViewController: UIViewController, GIDSignInDelegate, GIDSignInUIDelegate {
         if (GIDSignIn.sharedInstance().hasAuthInKeychain()) {
             self.signInButton.isHidden = true;
         }
+        
+        //swipe right
+        let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(self.animateMenu));
+        swipeRight.direction = UISwipeGestureRecognizerDirection.right;
+        self.view.addGestureRecognizer(swipeRight);
+        
+        //swipe left
+        let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(self.animateMenu));
+        swipeLeft.direction = UISwipeGestureRecognizerDirection.left;
+        self.view.addGestureRecognizer(swipeLeft);
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -152,7 +163,7 @@ class ViewController: UIViewController, GIDSignInDelegate, GIDSignInUIDelegate {
     func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!,
               withError error: Error!) {
         if let error = error {
-            showAlert(title: "Authentication Error", message: error.localizedDescription)
+            Common.showAlert(title: "Authentication Error", message: error.localizedDescription, controller: self);
             self.service.authorizer = nil
         } else {
             self.signInButton.isHidden = true;
@@ -178,10 +189,10 @@ class ViewController: UIViewController, GIDSignInDelegate, GIDSignInUIDelegate {
                                         finishedWithObject result : GTLRSheets_ValueRange,
                                         error : NSError?) {
         
-        endLoader();
+        Common.hideLoader(Loader: loader);
         
         if let error = error {
-            showAlert(title: "Error", message: error.localizedDescription)
+            Common.showAlert(title: "Error", message: error.localizedDescription, controller: self);
             return
         }
         
@@ -227,10 +238,10 @@ class ViewController: UIViewController, GIDSignInDelegate, GIDSignInUIDelegate {
                                  finishedWithObject result : GTLRSheets_ValueRange,
                                  error : NSError?) {
         
-        endLoader();
+        Common.hideLoader(Loader: loader);
         
         if let error = error {
-            showAlert(title: "Error", message: error.localizedDescription)
+            Common.showAlert(title: "Error", message: error.localizedDescription, controller: self);
             return
         }
         
@@ -250,32 +261,5 @@ class ViewController: UIViewController, GIDSignInDelegate, GIDSignInUIDelegate {
         }
         
         output.text = majorsString
-    }
-    
-    
-    // Helper for showing an alert
-    func showAlert(title : String, message: String) {
-        let alert = UIAlertController(
-            title: title,
-            message: message,
-            preferredStyle: UIAlertControllerStyle.alert
-        )
-        let ok = UIAlertAction(
-            title: "OK",
-            style: UIAlertActionStyle.default,
-            handler: nil
-        )
-        alert.addAction(ok)
-        present(alert, animated: true, completion: nil)
-    }
-    
-    func showLoader() {
-        loader.startAnimating();
-        loader.isHidden = false;
-    }
-    
-    func endLoader() {
-        loader.isHidden = true;
-        loader.stopAnimating();
     }
 }
