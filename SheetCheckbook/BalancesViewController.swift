@@ -65,7 +65,12 @@ class BalancesViewController: UIViewController {
                 if(row.count > 0) {
                     let value = row[0]
                     
-                    createBalanceView(displayText: String(describing: value))
+                    if(Double(String(describing: value)) != nil) {
+                        createBalanceView(displayText: String(describing: value))
+                    }
+                    else {
+                        createBalanceHeader(headerText: String(describing: value))
+                    }
                 }
             }
         }
@@ -78,6 +83,17 @@ class BalancesViewController: UIViewController {
         labelView.textColor = UIColor.white;
         labelView.text = displayText;
         labelView.font = labelView.font.withSize(14);
+        
+        currentYLocation = currentYLocation + Int(labelView.frame.height);
+        
+        Container.addSubview(labelView);
+    }
+    
+    func createBalanceHeader(headerText: String) {
+        let labelView = UILabel(frame: CGRect(x: 0, y: currentYLocation, width: Int(Container.frame.width), height: 25))
+        labelView.textColor = UIColor.white;
+        labelView.text = headerText;
+        labelView.font = UIFont.boldSystemFont(ofSize: 16);
         
         currentYLocation = currentYLocation + Int(labelView.frame.height);
         
