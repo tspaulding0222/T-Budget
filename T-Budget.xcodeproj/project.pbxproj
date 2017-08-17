@@ -22,6 +22,7 @@
 		5F9A0CEB1F2A5E5200BF9C97 /* BillsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F9A0CEA1F2A5E5200BF9C97 /* BillsViewController.swift */; };
 		5F9A0CED1F2A5F5C00BF9C97 /* BalancesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F9A0CEC1F2A5F5C00BF9C97 /* BalancesViewController.swift */; };
 		5F9A0CEF1F2A5FAE00BF9C97 /* AttributionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F9A0CEE1F2A5FAE00BF9C97 /* AttributionsViewController.swift */; };
+		5FAD59031F45D7AC00E37924 /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FAD59021F45D7AC00E37924 /* Common.swift */; };
 		F000BC9F4B2E2313A487BC42 /* Pods_T_Budget.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59CAA56BE8D44FE67F56ECAE /* Pods_T_Budget.framework */; };
 /* End PBXBuildFile section */
 
@@ -44,6 +45,7 @@
 		5F9A0CEA1F2A5E5200BF9C97 /* BillsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BillsViewController.swift; sourceTree = "<group>"; };
 		5F9A0CEC1F2A5F5C00BF9C97 /* BalancesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BalancesViewController.swift; sourceTree = "<group>"; };
 		5F9A0CEE1F2A5FAE00BF9C97 /* AttributionsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttributionsViewController.swift; sourceTree = "<group>"; };
+		5FAD59021F45D7AC00E37924 /* Common.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
 		CE1A9D10E49B71FBCF76F1E8 /* Pods-T-Budget.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-T-Budget.release.xcconfig"; path = "Pods/Target Support Files/Pods-T-Budget/Pods-T-Budget.release.xcconfig"; sourceTree = "<group>"; };
 		DF5B85838488EE9142E1A240 /* Pods-T-Budget.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-T-Budget.debug.xcconfig"; path = "Pods/Target Support Files/Pods-T-Budget/Pods-T-Budget.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -84,6 +86,7 @@
 			children = (
 				5F9A0CE71F2A5D5100BF9C97 /* ViewControllers */,
 				5F4D41731F1D13A3001F4CD8 /* AppDelegate.swift */,
+				5FAD59021F45D7AC00E37924 /* Common.swift */,
 				5F8B79F21F1E83160060C223 /* TomUITextView.swift */,
 				5F8B79EA1F1E4F780060C223 /* Colors.swift */,
 				5F8B79E81F1E4E380060C223 /* UIView+Extension.swift */,
@@ -255,6 +258,7 @@
 				5F2187E61F27B58100EE06C3 /* AddExpenseViewController.swift in Sources */,
 				5F8B79EB1F1E4F780060C223 /* Colors.swift in Sources */,
 				5F9A0CEB1F2A5E5200BF9C97 /* BillsViewController.swift in Sources */,
+				5FAD59031F45D7AC00E37924 /* Common.swift in Sources */,
 				5F9A0CE61F2A26CF00BF9C97 /* NotesViewController.swift in Sources */,
 				5F9A0CED1F2A5F5C00BF9C97 /* BalancesViewController.swift in Sources */,
 				5F8B79E91F1E4E380060C223 /* UIView+Extension.swift in Sources */,

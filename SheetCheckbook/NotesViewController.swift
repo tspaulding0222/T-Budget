@@ -50,17 +50,9 @@ class NotesViewController: UIViewController {
         ResetButton.layer.borderWidth = 1;
         ResetButton.layer.borderColor = UIColor.black.cgColor;
         
-        let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(dismissKeyboardSwipe(sender:)))
         swipeDown.direction = .down
         self.view.addGestureRecognizer(swipeDown)
-        
-        //Looks for single or multiple taps.
-        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-        
-        //Uncomment the line below if you want the tap not not interfere and cancel other interactions.
-//        tap.cancelsTouchesInView = false
-        
-        view.addGestureRecognizer(tap)
         
         getNoteFromGoogleSheet();
     }
@@ -70,7 +62,7 @@ class NotesViewController: UIViewController {
     }
     
     func getNoteFromGoogleSheet() {
-        startLoader();
+        Common.showLoader(Loader: Loader)
         
         let spreadsheetId = "1fqEk4yeKqjJR6zQPGlu8ZYrOPx_Y7T8vp17hin3HaFY"
         let range = "Checking!C24"
@@ -85,7 +77,7 @@ class NotesViewController: UIViewController {
                                             finishedWithObject result : GTLRSheets_ValueRange,
                                             error : NSError?) {
         if let error = error {
-            showAlert(title: "Error", message: error.localizedDescription)
+            Common.showAlert(title: "Error", message: error.localizedDescription, controller: self);
             return
         }
         
@@ -105,11 +97,11 @@ class NotesViewController: UIViewController {
         
         NoteText.text = noteTextContents;
         
-        endLoader();
+        Common.hideLoader(Loader: Loader)
     }
     
     func sendNoteChangesToGoogleSheet() {
-        dismissKeyboard();
+        Common.dismissKeyboard(view: self.view)
         
         let spreadsheetId = "1fqEk4yeKqjJR6zQPGlu8ZYrOPx_Y7T8vp17hin3HaFY"
         let range = "Checking!C24";
@@ -126,57 +118,14 @@ class NotesViewController: UIViewController {
                                      finishedWithObject result : GTLRSheets_ValueRange,
                                      error : NSError?) {
         if let error = error {
-            showAlert(title: "Error", message: error.localizedDescription)
+            Common.showAlert(title: "Error", message: error.localizedDescription, controller: self)
             return
         }
-        endLoader();
-        showSuccessNotif();
-    }
-    
-    // Helper for showing an alert
-    func showAlert(title : String, message: String) {
-        let alert = UIAlertController(
-            title: title,
-            message: message,
-            preferredStyle: UIAlertControllerStyle.alert
-        )
-        let ok = UIAlertAction(
-            title: "OK",
-            style: UIAlertActionStyle.default,
-            handler: nil
-        )
-        alert.addAction(ok)
-        present(alert, animated: true, completion: nil)
-    }
-    
-    func startLoader() {
-        Loader.startAnimating();
-        Loader.isHidden = false;
-    }
-    
-    func endLoader() {
-        Loader.isHidden = true;
-        Loader.stopAnimating();
-    }
-    
-    func dismissKeyboard() {
-        view.endEditing(true)
-    }
-    
-    func showSuccessNotif() {
-        UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut, animations: {
-            self.SuccessNotif.alpha = 1;
-            self.SuccessNotif.frame.origin.y -= self.SuccessNotif.frame.height;
-        });
-        
-        //Auto hide the success notification
-        let when = DispatchTime.now() + 2 // Wait 1 second
-        DispatchQueue.main.asyncAfter(deadline: when) {
-            UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut, animations: {
-                self.SuccessNotif.alpha = 0;
-                self.SuccessNotif.frame.origin.y += self.SuccessNotif.frame.height;
-            });
-        }
+        Common.hideLoader(Loader: Loader)
+        Common.showSuccessNotif(SuccessNotif: SuccessNotif);
     }
 
+    func dismissKeyboardSwipe(sender: UIGestureRecognizer) {
+        Common.dismissKeyboard(view: self.view);
+    }
 }

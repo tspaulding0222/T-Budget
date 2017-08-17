@@ -30,7 +30,7 @@ class AddExpenseViewController: UIViewController, UITextFieldDelegate {
         let amountString = AmountTextField.text;
         
         if(locationString == nil || amountString == nil || locationString!.isEmpty || amountString!.isEmpty){
-            showAlert(title: "Missing Date", message: "Please provide location and amount")
+            Common.showAlert(title: "Missing Date", message: "Please provide location and amount", controller: self);
         }
         else {
             if(AccountToggle.selectedSegmentIndex == 0){
@@ -70,15 +70,7 @@ class AddExpenseViewController: UIViewController, UITextFieldDelegate {
         AmountTextField.delegate = self;
         AmountTextField.keyboardType = UIKeyboardType.decimalPad;
         
-        //Looks for single or multiple taps.
-        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-        
-        //Uncomment the line below if you want the tap not not interfere and cancel other interactions.
-        tap.cancelsTouchesInView = false
-        
-        view.addGestureRecognizer(tap)
-        
-        let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(dismissKeyboardSwipe(sender:)))
         swipeDown.direction = .down
         self.view.addGestureRecognizer(swipeDown)
     }
@@ -122,7 +114,7 @@ class AddExpenseViewController: UIViewController, UITextFieldDelegate {
                               finishedWithObject result : GTLRSheets_ValueRange,
                               error : NSError?) {
         if let error = error {
-            showAlert(title: "Error", message: error.localizedDescription)
+            Common.showAlert(title: "Error", message: error.localizedDescription, controller: self);
             return
         }
         
@@ -130,8 +122,8 @@ class AddExpenseViewController: UIViewController, UITextFieldDelegate {
             updateBudgetValues();
         } else {
             clearFields();
-            endLoader();
-            showSuccessNotif();
+            Common.hideLoader(Loader: Loader);
+            Common.showSuccessNotif(SuccessNotif: SuccessNotification);
         }
     }
     
@@ -145,7 +137,7 @@ class AddExpenseViewController: UIViewController, UITextFieldDelegate {
     
     func sendUpdatedBudgetToGoogleSheet(ticket: GTLRServiceTicket, finishedWithObject result : GTLRSheets_ValueRange, error : NSError?) {
         if let error = error {
-            showAlert(title: "Error", message: error.localizedDescription)
+            Common.showAlert(title: "Error", message: error.localizedDescription, controller: self);
             return
         }
         
@@ -178,8 +170,8 @@ class AddExpenseViewController: UIViewController, UITextFieldDelegate {
                                 finishedWithObject result : GTLRSheets_ValueRange,
                                 error : NSError?) {
         clearFields();
-        endLoader();
-        showSuccessNotif();
+        Common.hideLoader(Loader: Loader);
+        Common.showSuccessNotif(SuccessNotif: SuccessNotification);
     }
     
     func getRangeDependingOnBudgetString() -> String {
@@ -192,32 +184,6 @@ class AddExpenseViewController: UIViewController, UITextFieldDelegate {
         }
         
         return range;
-    }
-    
-    func showLoader(){
-        Loader.startAnimating();
-        Loader.isHidden = false;
-    }
-    
-    func endLoader() {
-        Loader.isHidden = true;
-        Loader.stopAnimating();
-    }
-    
-    func showSuccessNotif() {
-        UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut, animations: {
-            self.SuccessNotification.alpha = 1;
-            self.SuccessNotification.frame.origin.y -= self.SuccessNotification.frame.height;
-        });
-        
-        //Auto hide the success notification
-        let when = DispatchTime.now() + 2 // Wait 1 second
-        DispatchQueue.main.asyncAfter(deadline: when) {
-            UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut, animations: {
-                self.SuccessNotification.alpha = 0;
-                self.SuccessNotification.frame.origin.y += self.SuccessNotification.frame.height;
-            });
-        }
     }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
@@ -236,29 +202,13 @@ class AddExpenseViewController: UIViewController, UITextFieldDelegate {
         return false
     }
     
-    // Helper for showing an alert
-    func showAlert(title : String, message: String) {
-        let alert = UIAlertController(
-            title: title,
-            message: message,
-            preferredStyle: UIAlertControllerStyle.alert
-        )
-        let ok = UIAlertAction(
-            title: "OK",
-            style: UIAlertActionStyle.default,
-            handler: nil
-        )
-        alert.addAction(ok)
-        present(alert, animated: true, completion: nil)
-    }
-    
-    func dismissKeyboard() {
-        view.endEditing(true)
-    }
-    
     func clearFields() {
         AmountTextField.text = "";
         LocationTextField.text = "";
         BudgetField.text = "";
+    }
+    
+    func dismissKeyboardSwipe(sender: UIGestureRecognizer) {
+        Common.dismissKeyboard(view: self.view);
     }
 }

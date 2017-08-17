@@ -23,7 +23,7 @@ class BalancesViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        endLoader();
+        Common.hideLoader(Loader: Loader);
         
         HeaderBf.setGradientBackground(colorOne: Colors.darkOrange, colorTwo: Colors.lightOragne);
 
@@ -35,7 +35,7 @@ class BalancesViewController: UIViewController {
     }
     
     func getBalancesFromGoogleSheet() {
-        showLoader();
+        Common.showLoader(Loader: Loader);
         
         let spreadsheetId = "1fqEk4yeKqjJR6zQPGlu8ZYrOPx_Y7T8vp17hin3HaFY"
         let range = "Checking!A2:A18"
@@ -50,7 +50,7 @@ class BalancesViewController: UIViewController {
                              finishedWithObject result : GTLRSheets_ValueRange,
                              error : NSError?) {
         if let error = error {
-            showAlert(title: "Error", message: error.localizedDescription)
+            Common.showAlert(title: "Error", message: error.localizedDescription, controller: self);
             return
         }
         
@@ -70,7 +70,7 @@ class BalancesViewController: UIViewController {
             }
         }
         
-        endLoader();
+        Common.hideLoader(Loader: Loader);
     }
     
     func createBalanceView(displayText: String) {
@@ -82,31 +82,5 @@ class BalancesViewController: UIViewController {
         currentYLocation = currentYLocation + Int(labelView.frame.height);
         
         Container.addSubview(labelView);
-    }
-    
-    // Helper for showing an alert
-    func showAlert(title : String, message: String) {
-        let alert = UIAlertController(
-            title: title,
-            message: message,
-            preferredStyle: UIAlertControllerStyle.alert
-        )
-        let ok = UIAlertAction(
-            title: "OK",
-            style: UIAlertActionStyle.default,
-            handler: nil
-        )
-        alert.addAction(ok)
-        present(alert, animated: true, completion: nil)
-    }
-    
-    func showLoader(){
-        Loader.startAnimating();
-        Loader.isHidden = false;
-    }
-    
-    func endLoader() {
-        Loader.isHidden = true;
-        Loader.stopAnimating();
     }
 }
